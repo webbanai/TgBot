@@ -23,14 +23,20 @@ function createBot() {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
+   
   var __telegramBot: Bot | undefined
 }
 
-// One bot instance per server process — handlers are stateless, so sharing
-// it across requests/hot-reloads avoids re-registering listeners.
-export const bot = globalThis.__telegramBot ?? createBot()
-
-if (process.env.NODE_ENV !== "production") {
-  globalThis.__telegramBot = bot
+/**
+ * One bot instance per server process — handlers are stateless, so sharing
+ * it across requests/hot-reloads avoids re-registering listeners.
+ *
+ * Built lazily (not at module load) so builds/static analysis don't fail
+ * before `TELEGRAM_BOT_TOKEN` is available in the runtime environment.
+ */
+export function getBot() {
+  if (!globalThis.__telegramBot) {
+    globalThis.__telegramBot = createBot()
+  }
+  return globalThis.__telegramBot
 }

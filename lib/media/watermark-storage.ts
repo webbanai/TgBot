@@ -20,13 +20,10 @@ export async function saveWatermarkLogo(telegramId: number, buffer: Buffer, cont
 /** Reads a previously saved watermark logo back into memory. Returns null if missing. */
 export async function readWatermarkLogo(pathname: string): Promise<Buffer | null> {
   const result = await get(pathname, { access: "private" })
-  if (!result) return null
+  if (!result || !result.stream) return null
 
-  const chunks: Uint8Array[] = []
-  for await (const chunk of result.stream) {
-    chunks.push(chunk as Uint8Array)
-  }
-  return Buffer.concat(chunks)
+  const arrayBuffer = await new Response(result.stream).arrayBuffer()
+  return Buffer.from(arrayBuffer)
 }
 
 export async function deleteWatermarkLogo(pathname: string) {

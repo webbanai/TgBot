@@ -54,11 +54,14 @@ export default async function Home() {
           </div>
 
           {botInfo && (
-            <Button asChild size="lg">
-              <a href={`https://t.me/${botInfo.username}`} target="_blank" rel="noopener noreferrer">
-                Open in Telegram
-              </a>
-            </Button>
+            <Button
+              size="lg"
+              render={
+                <a href={`https://t.me/${botInfo.username}`} target="_blank" rel="noopener noreferrer">
+                  Open in Telegram
+                </a>
+              }
+            />
           )}
         </section>
 
